@@ -88,10 +88,10 @@ export default async function AdminPortalPage() {
                  </tr>
                </thead>
                <tbody className="divide-y divide-gray-50">
-                 {students?.map(student => {
+                 {students?.map((student: any) => {
                    const logs = student.attendance_logs as any[];
                    const total = logs?.length || 0;
-                   const present = logs?.filter(l => l.status === 'present').length || 0;
+                   const present = logs?.filter((l: any) => l.status === 'present').length || 0;
                    const rate = total > 0 ? Math.round((present / total) * 100) : 0;
 
                    return (

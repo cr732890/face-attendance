@@ -31,7 +31,7 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
 
   // 3. Compute Stats
   const totalClasses = logs?.length || 0;
-  const presentCount = logs?.filter(l => l.status === 'present').length || 0;
+  const presentCount = logs?.filter((l: any) => l.status === 'present').length || 0;
   const attendancePercentage = totalClasses > 0 ? Math.round((presentCount / totalClasses) * 100) : 0;
 
   // Generate last 30 days for calendar view
@@ -86,9 +86,9 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
                 ))}
 
                 {last30Days.map(date => {
-                  const dayLogs = logs?.filter(l => l.marked_at && isSameDay(new Date(l.marked_at), date));
-                  const isPresent = dayLogs?.some(l => l.status === 'present');
-                  const isAbsent = dayLogs?.some(l => l.status === 'absent');
+                  const dayLogs = logs?.filter((l: any) => l.marked_at && isSameDay(new Date(l.marked_at), date));
+                  const isPresent = dayLogs?.some((l: any) => l.status === 'present');
+                  const isAbsent = dayLogs?.some((l: any) => l.status === 'absent');
                   
                   let bgColor = 'bg-gray-100';
                   if (isPresent) bgColor = 'bg-green-500 cursor-pointer shadow-sm';
@@ -129,7 +129,7 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {logs?.map(log => (
+                {logs?.map((log: any) => (
                   <tr key={log.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 text-gray-900 font-medium">
                       {log.marked_at ? format(new Date(log.marked_at), 'PPP p') : '-'}

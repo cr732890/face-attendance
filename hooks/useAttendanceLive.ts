@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { getStudentDirectory, getSessionLogs } from '@/app/admin/actions';
 
+export type AttendanceLog = any;
+
 export function useAttendanceLive(sessionId: string) {
   const [logs, setLogs] = useState<any[]>([]);
   const [directory, setDirectory] = useState<any[]>([]);
