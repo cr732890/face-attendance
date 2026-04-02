@@ -2,6 +2,7 @@
 
 import { createServerSupabase } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
 
 export async function addStudentProfile(formData: FormData) {
   const supabase = await createServerSupabase();
@@ -16,7 +17,7 @@ export async function addStudentProfile(formData: FormData) {
   const email = formData.get('email') as string || `${crypto.randomUUID().slice(0, 8)}@student.local`;
   
   // Use Service Role Key to bypass Postgres RLS for inserting orphan profiles!
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -42,7 +43,7 @@ export async function addStudentProfile(formData: FormData) {
 }
 
 export async function getStudentDirectory() {
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -57,7 +58,7 @@ export async function markStudentAttendance(payload: {
   session_id: string;
   confidence_score: number;
 }) {
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -73,7 +74,7 @@ export async function markStudentAttendance(payload: {
 }
 
 export async function getFaceEmbeddings() {
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -86,7 +87,7 @@ export async function getFaceEmbeddings() {
 }
 
 export async function saveOrUpdateFaceEmbedding(profileId: string, descriptor: number[], snapshotCount: number) {
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -116,7 +117,7 @@ export async function saveOrUpdateFaceEmbedding(profileId: string, descriptor: n
 }
 
 export async function getSessionLogs(sessionId: string) {
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -133,7 +134,7 @@ export async function getSessionLogs(sessionId: string) {
 }
 
 export async function deleteStudentProfile(profileId: string) {
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!

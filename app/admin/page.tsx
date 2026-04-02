@@ -1,4 +1,5 @@
 import { createServerSupabase } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { DeleteStudentButton } from '@/components/DeleteStudentButton';
@@ -34,7 +35,7 @@ export default async function AdminPortalPage() {
   }
 
   // Fetch all students and their logs relationship using Service Role key to bypass RLS restrictions!
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!

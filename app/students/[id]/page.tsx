@@ -1,4 +1,5 @@
 import { createServerSupabase } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { format, subDays, isSameDay } from 'date-fns';
@@ -7,7 +8,7 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
   const { id: profileId } = await params;
 
   // Use Service Role Key to bypass Postgres RLS for reading orphan profiles!
-  const { createClient } = require('@supabase/supabase-js');
+  
   const adminSupabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
