@@ -27,7 +27,7 @@ export default async function RegisterPage({
                 name="full_name"
                 type="text"
                 required
-                className="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-3 border bg-gray-50 transition-colors hover:bg-gray-100"
+                className="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-3 border bg-gray-50 text-black transition-colors hover:bg-gray-100"
                 placeholder="Jane Doe"
               />
             </div>
@@ -41,7 +41,7 @@ export default async function RegisterPage({
                 name="email"
                 type="email"
                 required
-                className="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-3 border bg-gray-50 transition-colors hover:bg-gray-100"
+                className="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-3 border bg-gray-50 text-black transition-colors hover:bg-gray-100"
                 placeholder="you@example.com"
               />
             </div>
@@ -55,7 +55,7 @@ export default async function RegisterPage({
                 name="password"
                 type="password"
                 required
-                className="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-3 border bg-gray-50 transition-colors hover:bg-gray-100"
+                className="block w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-3 border bg-gray-50 text-black transition-colors hover:bg-gray-100"
                 placeholder="••••••••"
               />
             </div>
