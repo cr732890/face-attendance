@@ -1,11 +1,12 @@
 import Link from 'next/link';
+import { WebGLShader } from "@/components/ui/web-gl-shader";
+import { LiquidButton } from '@/components/ui/liquid-glass-button';
 
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-[#0a0a0a] overflow-hidden font-sans text-white">
-      {/* Background decorations */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
+      {/* Background WebGL Shader */}
+      <WebGLShader />
 
       {/* Navbar Minimal */}
       <nav className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
@@ -23,55 +24,54 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="relative z-10 flex flex-col items-center justify-center text-center px-4 mt-20 max-w-5xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-widest mb-8">
-          <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+      <main className="relative z-10 flex flex-col items-center justify-center text-center px-4 mt-20 max-w-5xl mx-auto bg-black/40 backdrop-blur-[2px] p-12 rounded-3xl border border-white/10 shadow-2xl">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8 backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-indigo-400 animate-ping absolute"></span>
+          <span className="w-2 h-2 rounded-full bg-indigo-500 relative"></span>
           Live Beta v1.0
         </div>
         
         <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[1.1]">
           Frictionless Attendance via <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-            Facial Recognition.
+             Facial Recognition.
           </span>
         </h1>
         
-        <p className="text-lg md:text-xl text-gray-400 max-w-2xl mb-12 leading-relaxed">
+        <p className="text-lg md:text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed">
           Eliminate manual roll calls and badge swiping. Securely log attendance in milliseconds using edge AI and advanced liveness detection.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <Link 
-            href="/login" 
-            className="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-[0_0_40px_rgba(79,70,229,0.3)] flex items-center justify-center gap-2"
-          >
-            Access Portal
+        <div className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto">
+          <Link href="/login">
+            <LiquidButton className="text-white border border-white/10 rounded-full bg-indigo-600/80 hover:bg-indigo-500/80" size="xl">
+              Access Portal
+            </LiquidButton>
           </Link>
-          <Link 
-            href="/register" 
-            className="w-full sm:w-auto px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full font-semibold text-lg transition-all flex items-center justify-center gap-2"
-          >
-            Student Enrollment
+          <Link href="/register">
+            <LiquidButton className="text-white border border-white/20 rounded-full" size="xl">
+              Student Enrollment
+            </LiquidButton>
           </Link>
         </div>
 
         {/* Feature Highlights Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 w-full text-left">
-           <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm">
+           <div className="p-6 bg-black/60 border border-white/10 rounded-2xl backdrop-blur-md">
               <svg className="w-8 h-8 text-indigo-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
               </svg>
               <h3 className="font-bold text-lg mb-2">Live AI Match</h3>
               <p className="text-gray-400 text-sm">Validates 128-point facial topology against the database in real-time under any lighting.</p>
            </div>
-           <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm">
+           <div className="p-6 bg-black/60 border border-white/10 rounded-2xl backdrop-blur-md">
               <svg className="w-8 h-8 text-amber-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
               <h3 className="font-bold text-lg mb-2">Instant Sync</h3>
               <p className="text-gray-400 text-sm">Attendance logs are dispatched instantly to the administrator dashboard.</p>
            </div>
-           <div className="p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm">
+           <div className="p-6 bg-black/60 border border-white/10 rounded-2xl backdrop-blur-md">
               <svg className="w-8 h-8 text-emerald-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
               </svg>

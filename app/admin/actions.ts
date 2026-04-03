@@ -3,6 +3,7 @@
 import { createServerSupabase } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
+import { revalidatePath } from 'next/cache';
 
 export async function addStudentProfile(formData: FormData) {
   const supabase = await createServerSupabase();
@@ -63,6 +64,18 @@ export async function markStudentAttendance(payload: {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
+
+  // Verify profile still exists before marking — prevents ghost entries for deleted users
+  const { data: profileExists } = await adminSupabase
+    .from('profiles')
+    .select('id')
+    .eq('id', payload.profile_id)
+    .maybeSingle();
+
+  if (!profileExists) {
+    console.warn(`Skipped attendance: profile ${payload.profile_id} no longer exists (deleted).`);
+    return false;
+  }
 
   const { error } = await adminSupabase.from('attendance_logs').insert({
     ...payload,
@@ -141,13 +154,23 @@ export async function deleteStudentProfile(profileId: string) {
   );
 
   // Delete in order: attendance_logs → face_embeddings → profile
-  await adminSupabase.from('attendance_logs').delete().eq('profile_id', profileId);
-  await adminSupabase.from('face_embeddings').delete().eq('profile_id', profileId);
+  const { error: logsErr } = await adminSupabase.from('attendance_logs').delete().eq('profile_id', profileId);
+  if (logsErr) console.error('Failed to delete attendance_logs:', logsErr);
+  
+  const { error: embErr } = await adminSupabase.from('face_embeddings').delete().eq('profile_id', profileId);
+  if (embErr) console.error('Failed to delete face_embeddings:', embErr);
+  
   const { error } = await adminSupabase.from('profiles').delete().eq('id', profileId);
 
   if (error) {
     console.error('deleteStudentProfile error:', error);
     return { error: error.message };
   }
+
+  // Bust Next.js cache so analytics & personnel pages show updated data
+  revalidatePath('/admin');
+  revalidatePath('/admin/reports');
+  revalidatePath('/dashboard');
+
   return { error: null };
 }

@@ -9,9 +9,10 @@ type Status = 'loading' | 'ready' | 'error';
 interface Props {
   sessionId: string;
   classId: string;
+  onAttendanceMarked?: (studentName: string) => void;
 }
 
-export function WebcamAttendance({ sessionId, classId }: Props) {
+export function WebcamAttendance({ sessionId, classId, onAttendanceMarked }: Props) {
   const videoRef  = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const matcherRef = useRef<faceapi.FaceMatcher | null>(null);
@@ -25,25 +26,44 @@ export function WebcamAttendance({ sessionId, classId }: Props) {
   const [markedStudents, setMarkedStudents] = useState<string[]>([]);
 
   useEffect(() => {
+    let mounted = true;
+
     async function init() {
       try {
         setDebugInfo('Loading AI models...');
         await loadModels();
+        if (!mounted) return;
         setDebugInfo('Starting camera...');
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { width: 640, height: 480, facingMode: 'user' }
         });
-        videoRef.current!.srcObject = stream;
-        await videoRef.current!.play();
 
+        if (!mounted || !videoRef.current) {
+          stream.getTracks().forEach(t => t.stop());
+          return;
+        }
+
+        videoRef.current.srcObject = stream;
+
+        try {
+          await videoRef.current.play();
+        } catch (playErr: any) {
+          // AbortError is harmless — happens when component unmounts during play()
+          if (playErr.name !== 'AbortError') throw playErr;
+          return;
+        }
+
+        if (!mounted) return;
         setDebugInfo('Fetching face embeddings from database...');
 
         // Fetch ALL enrolled descriptors — Service Role key bypasses RLS
         const data = await getFaceEmbeddings();
+        if (!mounted) return;
         setDebugInfo(`Fetched ${data.length} embedding(s). Building matcher...`);
 
         const dir = await getStudentDirectory();
+        if (!mounted) return;
         nameMapRef.current = dir.reduce((acc: Record<string, string>, obj: any) => {
           acc[obj.id] = obj.full_name;
           return acc;
@@ -63,19 +83,23 @@ export function WebcamAttendance({ sessionId, classId }: Props) {
         } else {
           setDebugInfo('NO embeddings found! Re-enroll all students from the Admin portal first.');
         }
-        setStatus('ready');
+        if (mounted) setStatus('ready');
       } catch (e: any) {
         console.error(e);
-        setDebugInfo(`Error: ${e?.message}`);
-        setStatus('error');
+        if (mounted) {
+          setDebugInfo(`Error: ${e?.message}`);
+          setStatus('error');
+        }
       }
     }
     init();
     return () => {
+      mounted = false;
       clearTimeout(loopRef.current);
       if (videoRef.current?.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach(t => t.stop());
+        videoRef.current.srcObject = null;
       }
     };
   }, []);
@@ -124,15 +148,21 @@ export function WebcamAttendance({ sessionId, classId }: Props) {
 
         if (label !== 'unknown' && !markedSet.current.has(label)) {
           markedSet.current.add(label);
-          // Show real name if in directory, otherwise show short ID
           const name = nameMapRef.current[label] || `Student (${label.slice(0, 8)})`;
-          setMarkedStudents(prev => [...prev, name]);
-          await markStudentAttendance({
+          const success = await markStudentAttendance({
             profile_id: label,
             class_id: null,
             session_id: sessionId,
             confidence_score: +(1 - match.distance).toFixed(3)
           });
+          if (success) {
+            // Only show in UI if the profile still exists and was logged
+            setMarkedStudents(prev => [...prev, name]);
+            onAttendanceMarked?.(name);
+          } else {
+            // Profile was deleted — remove from matcher so it won't match again
+            setDebugInfo(`Profile "${name}" no longer exists — skipped.`);
+          }
         }
       }
     } else if (detections.length === 0) {
@@ -140,7 +170,7 @@ export function WebcamAttendance({ sessionId, classId }: Props) {
     }
 
     loopRef.current = setTimeout(detect, 66);
-  }, [sessionId, classId, profilesLoaded]);
+  }, [sessionId, classId, profilesLoaded, onAttendanceMarked]);
 
   useEffect(() => {
     if (status === 'ready') detect();

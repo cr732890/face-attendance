@@ -1,6 +1,7 @@
 import { createServerSupabase } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { ScannerClient } from '@/components/ScannerClient';
+import { SentinelLayout } from '@/components/SentinelLayout';
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabase();
@@ -17,8 +18,8 @@ export default async function DashboardPage() {
     .single();
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <SentinelLayout showSidebar={true}>
       <ScannerClient profile={profile} />
-    </div>
+    </SentinelLayout>
   );
 }
